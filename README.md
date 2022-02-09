@@ -24,7 +24,7 @@ a middleware. This is a simple implementation to provide basic functionality.
 
 It is recommended that this software is installed through the use of Docker containers.
 
-```
+```shell
 docker pull ghcr.io/pwood/middleauth:latest
 ```
 
@@ -37,7 +37,9 @@ There are containers available for the following architectures:
 
 Otherwise, you can install with Go directly using:
 
-`go install github.com/pwood/middleauth`
+```shell
+go install github.com/pwood/middleauth
+```
 
 ## Usage
 
@@ -58,9 +60,10 @@ configuration file.
 
 It is recommended that you use `docker-compose` to deploy `middleauth` on a Docker host.
 
-An example `docker-compose.yml` follows, it assumes you have port 80 and 443 open on `traefik` with the entrypoints
+An example `docker-compose.yml` follows, it assumes you have port 80 and 443 open on `traefik` with the entry points
 named `web` and `websecure` respectively. It also services the `middleauth` webserver on a subdomain
-of `auth.example.org`. This will be used as `middleauth` develops to optionally show a login screen.
+of `auth.example.org`. This will be used as `middleauth` develops to optionally show a login screen. It defines the 
+`middleauth` forward auth middleware, this is used later by the services you are protecting. 
 
 ```yaml
 version: '3.5'
@@ -102,7 +105,7 @@ To protect another service with `middleauth` add a label to that services `docke
 services:
   protectedservice:
     labels:
-      - "traefik.http.routers.heimdall.middlewares=middleauth"
+      - "traefik.http.routers.<routername>.middlewares=middleauth"
 ```
 
 ## Maintainers
