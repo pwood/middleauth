@@ -10,12 +10,12 @@ import (
 var _ check.Checker = (*IPList)(nil)
 
 type IPList struct {
-	nets    []net.IPNet
-	results check.Result
+	nets   []net.IPNet
+	result check.Result
 }
 
 func New(stringNets []string, result check.Result) (IPList, error) {
-	i := IPList{results: result}
+	i := IPList{result: result}
 
 	for _, n := range stringNets {
 		_, parsedNet, err := net.ParseCIDR(n)
@@ -45,7 +45,7 @@ func (i IPList) Check(r http.Request) (check.Result, error) {
 
 	for _, n := range i.nets {
 		if n.Contains(parsedIp) {
-			return i.results, nil
+			return i.result, nil
 		}
 	}
 

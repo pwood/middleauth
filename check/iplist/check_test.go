@@ -35,7 +35,7 @@ func TestNew(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, expectedIPNetworks, out.nets)
-		assert.Equal(t, check.ACCEPT, out.results)
+		assert.Equal(t, check.ACCEPT, out.result)
 	})
 }
 
