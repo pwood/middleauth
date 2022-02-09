@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"github.com/pwood/middleauth/check"
 	"github.com/pwood/middleauth/check/iplist"
 	"github.com/pwood/middleauth/check/static"
@@ -41,7 +42,7 @@ func main() {
 
 	log.Printf("signal received, shutting down: %d", sig)
 
-	if err := serverDone(); err != nil {
+	if err := serverDone(context.Background()); err != nil {
 		log.Panicf("failed to stop http server: %s", err.Error())
 	}
 }

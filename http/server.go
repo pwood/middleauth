@@ -19,7 +19,7 @@ type Server struct {
 	ln     net.Listener
 }
 
-func (s *Server) Start() (func() error, error) {
+func (s *Server) Start() (func(context.Context) error, error) {
 	apiRouter := api.New(s.Checks)
 
 	r := mux.NewRouter()
@@ -41,8 +41,8 @@ func (s *Server) Start() (func() error, error) {
 		}
 	}()
 
-	return func() error {
-		if err := srv.Shutdown(context.Background()); err != nil {
+	return func(ctx context.Context) error {
+		if err := srv.Shutdown(ctx); err != nil {
 			return fmt.Errorf("couldn't shutdown server: %w", err)
 		}
 

@@ -1,6 +1,7 @@
 package http
 
 import (
+	"context"
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -15,7 +16,7 @@ func TestServer_Start(t *testing.T) {
 		assert.NoError(t, err)
 
 		defer func() {
-			assert.NoError(t, done())
+			assert.NoError(t, done(context.Background()))
 		}()
 
 		resp, err := http.Get(fmt.Sprintf("http://%s/api/status", srv.ln.Addr().String()))
