@@ -12,23 +12,7 @@ import (
 )
 
 func main() {
-	ipList := []string{"10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"}
-	i, err := iplist.New(ipList, check.ACCEPT)
-	if err != nil {
-		log.Panicf("failed to create IP list: %s", err.Error())
-	}
-
-	s, err := static.New(check.REJECT)
-	if err != nil {
-		log.Panicf("failed to create static: %s", err.Error())
-	}
-
-	checks := []check.Checker{i, s}
-
-	srv := http.Server{
-		Port:   8080,
-		Checks: checks,
-	}
+	srv := constructServer()
 
 	serverDone, err := srv.Start()
 	if err != nil {
@@ -45,4 +29,27 @@ func main() {
 	if err := serverDone(context.Background()); err != nil {
 		log.Panicf("failed to stop http server: %s", err.Error())
 	}
+}
+
+func constructServer() http.Server {
+	ipList := []string{"10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"}
+	i, err := iplist.New(ipList, check.ACCEPT)
+	if err != nil {
+		log.Panicf("failed to create IP list: %s", err.Error())
+	}
+
+	s, err := static.New(check.REJECT)
+	if err != nil {
+		log.Panicf("failed to create static: %s", err.Error())
+	}
+
+	checks := []check.Checker{i, s}
+
+	srv := http.Server{
+		Port:   8080,
+		Host:   "127.0.0.1",
+		Checks: checks,
+	}
+
+	return srv
 }
