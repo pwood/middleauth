@@ -56,11 +56,11 @@ configuration file.
 
 ### Deploying
 
-It is recommended that you use `docker-compose` to deploy `middleauth` on a Docker host. 
+It is recommended that you use `docker-compose` to deploy `middleauth` on a Docker host.
 
-An example `docker-compose.yml` follows, it assumes you have port 80 and 443 open on `traefik` with the entrypoints 
-named `web` and `websecure` respectively. It also services the `middleauth` webserver on a subdomain of `auth.example.org`.
-This will be used as `middleauth` develops to optionally show a login screen.
+An example `docker-compose.yml` follows, it assumes you have port 80 and 443 open on `traefik` with the entrypoints
+named `web` and `websecure` respectively. It also services the `middleauth` webserver on a subdomain
+of `auth.example.org`. This will be used as `middleauth` develops to optionally show a login screen.
 
 ```yaml
 version: '3.5'
@@ -69,23 +69,25 @@ services:
     restart: unless-stopped
     build: .
     environment:
-     - PERMITTED_NETWORKS=10.10.0.0/24
-     - SERVER_PORT=9991
+      - PERMITTED_NETWORKS=10.10.0.0/24
+      - SERVER_PORT=9991
     labels:
-     - "traefik.enable=true"
-     - "traefik.http.routers.auth.rule=Host(`auth.example.org`)"
-     - "traefik.http.routers.auth.entrypoints=websecure"
-     - "traefik.http.routers.auth.tls.certresolver=myletsencrypt"
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth.rule=Host(`auth.example.org`)"
+      - "traefik.http.routers.auth.entrypoints=websecure"
+      - "traefik.http.routers.auth.tls.certresolver=myletsencrypt"
 
-     - "traefik.http.routers.auth-http.rule=Host(`auth.example.org`)"
-     - "traefik.http.routers.auth-http.entrypoints=web"
-     - "traefik.http.routers.auth-http.middlewares=https_redirect"
+      - "traefik.http.routers.auth-http.rule=Host(`auth.example.org`)"
+      - "traefik.http.routers.auth-http.entrypoints=web"
+      - "traefik.http.routers.auth-http.middlewares=https_redirect"
 
-     - "traefik.http.services.auth.loadbalancer.server.port=9991"
+      - "traefik.http.services.auth.loadbalancer.server.port=9991"
 
-     - "traefik.http.middlewares.https_redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.https_redirect.redirectscheme.scheme=https"
+
+      - "traefik.http.middlewares.middleauth.forwardauth.address=http://middleauth:9991/api/check"
     networks:
-      traefik: {}
+      traefik: { }
 
 networks:
   traefik:
@@ -100,7 +102,7 @@ To protect another service with `middleauth` add a label to that services `docke
 services:
   protectedservice:
     labels:
-     - "traefik.http.middlewares.auth.forwardauth.address=http://middleauth:9991/api/check"
+      - "traefik.http.routers.heimdall.middlewares=middleauth"
 ```
 
 ## Maintainers
