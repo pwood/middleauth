@@ -5,7 +5,7 @@ FROM golang:${GO_VERSION}-alpine AS builder
 RUN mkdir /user && \
     echo 'nobody:x:65534:65534:nobody:/:' > /user/passwd && \
     echo 'nobody:x:65534:' > /user/group
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates git
 
 WORKDIR /src
 COPY ./ ./
