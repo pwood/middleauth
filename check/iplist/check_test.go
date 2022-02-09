@@ -48,7 +48,7 @@ func TestIPList_Check(t *testing.T) {
 
 		in := http.Request{}
 
-		out, err := iplist.Check(in)
+		out, err := iplist.Check(&in)
 
 		assert.Error(t, err)
 		assert.Equal(t, check.NEXT, out)
@@ -66,7 +66,7 @@ func TestIPList_Check(t *testing.T) {
 			},
 		}
 
-		out, err := iplist.Check(in)
+		out, err := iplist.Check(&in)
 
 		assert.Error(t, err)
 		assert.Equal(t, check.NEXT, out)
@@ -84,7 +84,7 @@ func TestIPList_Check(t *testing.T) {
 			},
 		}
 
-		out, err := iplist.Check(in)
+		out, err := iplist.Check(&in)
 
 		assert.NoError(t, err)
 		assert.Equal(t, check.NEXT, out)
@@ -102,7 +102,7 @@ func TestIPList_Check(t *testing.T) {
 			},
 		}
 
-		out, err := iplist.Check(in)
+		out, err := iplist.Check(&in)
 
 		assert.NoError(t, err)
 		assert.Equal(t, check.ACCEPT, out)

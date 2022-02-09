@@ -3,7 +3,6 @@ package static
 import (
 	"github.com/pwood/middleauth/check"
 	"github.com/stretchr/testify/assert"
-	"net/http"
 	"testing"
 )
 
@@ -35,7 +34,7 @@ func TestStatic_Check(t *testing.T) {
 		s, err := New(expectedResult)
 		assert.NoError(t, err)
 
-		actualResult, err := s.Check(http.Request{})
+		actualResult, err := s.Check(nil)
 		assert.NoError(t, err)
 		assert.Equal(t, expectedResult, actualResult)
 	})

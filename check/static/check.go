@@ -23,6 +23,6 @@ func New(result check.Result) (Static, error) {
 	}
 }
 
-func (i Static) Check(_ http.Request) (check.Result, error) {
+func (i Static) Check(_ *http.Request) (check.Result, error) {
 	return i.result, nil
 }

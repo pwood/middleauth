@@ -31,7 +31,7 @@ func New(stringNets []string, result check.Result) (IPList, error) {
 
 const header string = "X-Real-Ip"
 
-func (i IPList) Check(r http.Request) (check.Result, error) {
+func (i IPList) Check(r *http.Request) (check.Result, error) {
 	v := r.Header.Values(header)
 
 	if len(v) <= 0 {

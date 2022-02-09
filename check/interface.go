@@ -11,5 +11,5 @@ const (
 )
 
 type Checker interface {
-	Check(r http.Request) (Result, error)
+	Check(r *http.Request) (Result, error)
 }
