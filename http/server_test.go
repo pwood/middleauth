@@ -9,7 +9,7 @@ import (
 
 func TestServer_Start(t *testing.T) {
 	t.Run("verify that the api router is attached to the http server", func(t *testing.T) {
-		srv := &Server{Port: 0}
+		srv := &Server{Host: "127.0.0.1", Port: 0}
 
 		done, err := srv.Start()
 		assert.NoError(t, err)

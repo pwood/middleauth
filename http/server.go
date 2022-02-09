@@ -13,6 +13,7 @@ import (
 )
 
 type Server struct {
+	Host   string
 	Port   int
 	Checks []check.Checker
 	ln     net.Listener
@@ -24,7 +25,7 @@ func (s *Server) Start() (func() error, error) {
 	r := mux.NewRouter()
 	r.PathPrefix("/api").Handler(apiRouter)
 
-	bindAddress := fmt.Sprintf(":%d", s.Port)
+	bindAddress := fmt.Sprintf("%s:%d", s.Host, s.Port)
 	srv := &http.Server{Handler: r}
 
 	ln, err := net.Listen("tcp", bindAddress)
@@ -43,10 +44,6 @@ func (s *Server) Start() (func() error, error) {
 	return func() error {
 		if err := srv.Shutdown(context.Background()); err != nil {
 			return fmt.Errorf("couldn't shutdown server: %w", err)
-		}
-
-		if err := ln.Close(); err != nil {
-			return fmt.Errorf("couldn't close tcp listener: %w", err)
 		}
 
 		return nil
