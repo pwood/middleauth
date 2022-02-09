@@ -2,7 +2,7 @@
 
 [![license](https://img.shields.io/github/license/pwood/middleauth.svg)](https://github.com/pwood/middleauth/blob/master/LICENSE)
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg)](https://github.com/RichardLitt/standard-readme)
-[![Actions Status](https://github.com/pwood/middleauth/workflows/test/badge.svg)](https://github.com/pwood/middleauth/actions)
+[![Actions Status](https://github.com/pwood/middleauth/workflows/main/badge.svg)](https://github.com/pwood/middleauth/actions)
 
 > A configurable authentication middleware for usage with [traefik](https://github.com/traefik/traefik).
 
