@@ -6,13 +6,37 @@ import (
 	"github.com/pwood/middleauth/check/iplist"
 	"github.com/pwood/middleauth/check/static"
 	"github.com/pwood/middleauth/http"
+	"github.com/sethvargo/go-envconfig"
 	"log"
 	"os"
 	"os/signal"
 )
 
+type Config struct {
+	ConfigMode string `env:"CONFIG_MODE,default=ENV"`
+	ConfigFile string `env:"CONFIG_FILE"`
+
+	ServerHost string `env:"SERVER_HOST"`
+	ServerPort int    `env:"SERVER_PORT,default=8888"`
+
+	PermittedNetworks []string `env:"PERMITTED_NETWORKS"`
+}
+
 func main() {
-	srv := constructServer()
+	ctx := context.Background()
+
+	cfg := Config{}
+	if err := envconfig.Process(ctx, &cfg); err != nil {
+		log.Panicf("failed to parse environment for config: %s", err.Error())
+	}
+
+	var srv http.Server
+
+	if cfg.ConfigMode == "ENV" {
+		srv = constructServerFromEnvironmentConfig(cfg)
+	} else {
+		log.Panicf("unacceptable config mode: %s", cfg.ConfigMode)
+	}
 
 	serverDone, err := srv.Start()
 	if err != nil {
@@ -26,14 +50,13 @@ func main() {
 
 	log.Printf("signal received, shutting down: %d", sig)
 
-	if err := serverDone(context.Background()); err != nil {
+	if err := serverDone(ctx); err != nil {
 		log.Panicf("failed to stop http server: %s", err.Error())
 	}
 }
 
-func constructServer() http.Server {
-	ipList := []string{"10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"}
-	i, err := iplist.New(ipList, check.ACCEPT)
+func constructServerFromEnvironmentConfig(cfg Config) http.Server {
+	i, err := iplist.New(cfg.PermittedNetworks, check.ACCEPT)
 	if err != nil {
 		log.Panicf("failed to create IP list: %s", err.Error())
 	}
@@ -46,8 +69,8 @@ func constructServer() http.Server {
 	checks := []check.Checker{i, s}
 
 	srv := http.Server{
-		Port:   8080,
-		Host:   "127.0.0.1",
+		Port:   cfg.ServerPort,
+		Host:   cfg.ServerHost,
 		Checks: checks,
 	}
 
