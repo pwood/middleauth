@@ -48,13 +48,14 @@ go install github.com/pwood/middleauth
 `middleauth` supports configuration through environmental variables, in the future this may expanded to a JSON or YAML
 configuration file.
 
-| Name                 | Default | Purpose                                                                                    |
-|----------------------|---------|--------------------------------------------------------------------------------------------|
-| `CONFIG_MODE`        | `ENV`   | Select between different configuration modes. Currently only ENV supported.                |
-| `CONFIG_FILE`        |         | Filename to load configuration from, currently ignored.                                    |
-| `SERVER_HOST`        | `[::]`  | IP address to bind listening port to, default all V4 and V6 addresses.                     |
-| `SERVER_PORT`        | `8888`  | TCP port to open HTTP server on.                                                           |
-| `PERMITTED_NETWORKS` |         | Comma seperated lists of V4/V6 CIDR networks to access to sides protected by `middleauth`. |
+| Name                 | Default | Purpose                                                                                                                             |
+|----------------------|---------|-------------------------------------------------------------------------------------------------------------------------------------|
+| `CONFIG_MODE`        | `ENV`   | Select between different configuration modes. Currently only ENV supported.                                                         |
+| `CONFIG_FILE`        |         | Filename to load configuration from, currently ignored.                                                                             |
+| `SERVER_HOST`        | `[::]`  | IP address to bind listening port to, default all V4 and V6 addresses.                                                              |
+| `SERVER_PORT`        | `8888`  | TCP port to open HTTP server on.                                                                                                    |
+| `PERMITTED_NETWORKS` |         | Comma seperated lists of V4/V6 CIDR networks to access to sides protected by `middleauth`.                                          |
+| `PERMITTED_MTLS_ANY` | `false` | Boolean flag to allow access if an MTLS certificate is present, determined by the presence of `X-Forwarded-Tls-Client-Cert` header. |
 
 ### Deploying
 
@@ -62,8 +63,8 @@ It is recommended that you use `docker-compose` to deploy `middleauth` on a Dock
 
 An example `docker-compose.yml` follows, it assumes you have port 80 and 443 open on `traefik` with the entry points
 named `web` and `websecure` respectively. It also services the `middleauth` webserver on a subdomain
-of `auth.example.org`. This will be used as `middleauth` develops to optionally show a login screen. It defines the 
-`middleauth` forward auth middleware, this is used later by the services you are protecting. 
+of `auth.example.org`. This will be used as `middleauth` develops to optionally show a login screen. It defines the
+`middleauth` forward auth middleware, this is used later by the services you are protecting.
 
 ```yaml
 version: '3.5'

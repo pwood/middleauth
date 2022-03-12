@@ -20,6 +20,7 @@ type Config struct {
 	ServerPort int    `env:"SERVER_PORT,default=8888"`
 
 	PermittedNetworks []string `env:"PERMITTED_NETWORKS"`
+	PermittedMTLSAny  bool     `env:"PERMITTED_MTLS_ANY"`
 }
 
 func main() {
@@ -56,9 +57,22 @@ func main() {
 }
 
 func constructServerFromEnvironmentConfig(cfg Config) http.Server {
+	checks := []check.Checker{}
+
 	i, err := iplist.New(cfg.PermittedNetworks, check.ACCEPT)
 	if err != nil {
 		log.Panicf("failed to create IP list: %s", err.Error())
+	}
+
+	checks = append(checks, i)
+
+	if cfg.PermittedMTLSAny {
+		m, err := static.New(check.ACCEPT)
+		if err != nil {
+			log.Panicf("failed to create mtls: %s", err.Error())
+		}
+
+		checks = append(checks, m)
 	}
 
 	s, err := static.New(check.REJECT)
@@ -66,7 +80,7 @@ func constructServerFromEnvironmentConfig(cfg Config) http.Server {
 		log.Panicf("failed to create static: %s", err.Error())
 	}
 
-	checks := []check.Checker{i, s}
+	checks = append(checks, s)
 
 	srv := http.Server{
 		Port:   cfg.ServerPort,
