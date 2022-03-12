@@ -20,7 +20,7 @@ type Config struct {
 	ServerPort int    `env:"SERVER_PORT,default=8888"`
 
 	PermittedNetworks []string `env:"PERMITTED_NETWORKS"`
-	PermittedMTLSAny  bool     `env:"PERMITTED_MTLS_ANY"`
+	PermittedMTLSAny  bool     `env:"PERMITTED_MTLS_ANY,default=false"`
 }
 
 func main() {
