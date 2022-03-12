@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/pwood/middleauth/check"
 	"github.com/pwood/middleauth/check/iplist"
+	"github.com/pwood/middleauth/check/mtls"
 	"github.com/pwood/middleauth/check/static"
 	"github.com/pwood/middleauth/http"
 	"github.com/sethvargo/go-envconfig"
@@ -67,7 +68,7 @@ func constructServerFromEnvironmentConfig(cfg Config) http.Server {
 	checks = append(checks, i)
 
 	if cfg.PermittedMTLSAny {
-		m, err := static.New(check.ACCEPT)
+		m, err := mtls.New(check.ACCEPT)
 		if err != nil {
 			log.Panicf("failed to create mtls: %s", err.Error())
 		}
