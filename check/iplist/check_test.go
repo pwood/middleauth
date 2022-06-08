@@ -107,4 +107,40 @@ func TestIPList_Check(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, check.ACCEPT, out)
 	})
+
+	t.Run("returns NEXT if a non proxied request does not match the IPv6 list", func(t *testing.T) {
+		networks := []string{"2001::/16"}
+
+		iplist, err := New(networks, check.ACCEPT)
+		assert.NoError(t, err)
+
+		in := http.Request{
+			Header: http.Header{
+				"X-Real-Ip": []string{"2002::1"},
+			},
+		}
+
+		out, err := iplist.Check(&in)
+
+		assert.NoError(t, err)
+		assert.Equal(t, check.NEXT, out)
+	})
+
+	t.Run("returns ACCEPT if a non proxied request matches the IPv6 list", func(t *testing.T) {
+		networks := []string{"2001::/16"}
+
+		iplist, err := New(networks, check.ACCEPT)
+		assert.NoError(t, err)
+
+		in := http.Request{
+			Header: http.Header{
+				"X-Real-Ip": []string{"2001::1"},
+			},
+		}
+
+		out, err := iplist.Check(&in)
+
+		assert.NoError(t, err)
+		assert.Equal(t, check.ACCEPT, out)
+	})
 }
