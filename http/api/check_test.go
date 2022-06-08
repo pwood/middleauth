@@ -11,7 +11,7 @@ import (
 
 func Test_checkHandler_ServeHTTP(t *testing.T) {
 	t.Run("calling /api/check with a single checker that ACCEPTs the request returns 200 OK", func(t *testing.T) {
-		s, err := static.New(check.ACCEPT)
+		s, err := static.New(check.Accept)
 		assert.NoError(t, err)
 
 		mux := New([]check.Checker{s})
@@ -28,7 +28,7 @@ func Test_checkHandler_ServeHTTP(t *testing.T) {
 	})
 
 	t.Run("calling /api/check with a single checker that REJECTs the request returns 200 OK", func(t *testing.T) {
-		s, err := static.New(check.REJECT)
+		s, err := static.New(check.Reject)
 		assert.NoError(t, err)
 
 		mux := New([]check.Checker{s})

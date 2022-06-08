@@ -9,16 +9,16 @@ import (
 
 func TestNew(t *testing.T) {
 	t.Run("returns a new MTLS with desired result on match", func(t *testing.T) {
-		out, err := New(check.ACCEPT)
+		out, err := New(check.Accept)
 
 		assert.NoError(t, err)
-		assert.Equal(t, check.ACCEPT, out.result)
+		assert.Equal(t, check.Accept, out.result)
 	})
 }
 
 func TestMTLS_Check(t *testing.T) {
 	t.Run("returns initialised result type if header is present", func(t *testing.T) {
-		expectedResult := check.ACCEPT
+		expectedResult := check.Accept
 
 		s, err := New(expectedResult)
 		assert.NoError(t, err)
@@ -28,22 +28,22 @@ func TestMTLS_Check(t *testing.T) {
 
 		r.Header.Set(header, "present")
 
-		actualResult, err := s.Check(r)
+		decision, err := s.Check(r)
 		assert.NoError(t, err)
-		assert.Equal(t, expectedResult, actualResult)
+		assert.Equal(t, expectedResult, decision.Result)
 	})
 
 	t.Run("returns next result type if header is not present", func(t *testing.T) {
-		expectedResult := check.NEXT
+		expectedResult := check.Next
 
-		s, err := New(check.ACCEPT)
+		s, err := New(check.Accept)
 		assert.NoError(t, err)
 
 		r, err := http.NewRequest(http.MethodGet, "", nil)
 		assert.NoError(t, err)
 
-		actualResult, err := s.Check(r)
+		decision, err := s.Check(r)
 		assert.NoError(t, err)
-		assert.Equal(t, expectedResult, actualResult)
+		assert.Equal(t, expectedResult, decision.Result)
 	})
 }

@@ -5,11 +5,18 @@ import "net/http"
 type Result uint
 
 const (
-	REJECT Result = iota
-	NEXT
-	ACCEPT
+	Reject Result = iota
+	Next
+	Accept
 )
 
+type Decision struct {
+	Result  Result
+	Context string
+}
+
+var NextDecision = Decision{Result: Next}
+
 type Checker interface {
-	Check(r *http.Request) (Result, error)
+	Check(r *http.Request) (Decision, error)
 }

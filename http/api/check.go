@@ -12,16 +12,16 @@ type checkHandler struct {
 
 func (c checkHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	for _, chk := range c.checks {
-		result, err := chk.Check(r)
+		decision, err := chk.Check(r)
 		if err != nil {
 			log.Printf("check failed: %s", err.Error())
 		}
 
-		switch result {
-		case check.ACCEPT:
+		switch decision.Result {
+		case check.Accept:
 			http.Error(w, http.StatusText(http.StatusOK), http.StatusOK)
 			return
-		case check.REJECT:
+		case check.Reject:
 			http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
 			return
 		}

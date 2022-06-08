@@ -60,7 +60,7 @@ func main() {
 func constructServerFromEnvironmentConfig(cfg Config) http.Server {
 	checks := []check.Checker{}
 
-	i, err := iplist.New(cfg.PermittedNetworks, check.ACCEPT)
+	i, err := iplist.New(cfg.PermittedNetworks, check.Accept)
 	if err != nil {
 		log.Panicf("failed to create IP list: %s", err.Error())
 	}
@@ -68,7 +68,7 @@ func constructServerFromEnvironmentConfig(cfg Config) http.Server {
 	checks = append(checks, i)
 
 	if cfg.PermittedMTLSAny {
-		m, err := mtls.New(check.ACCEPT)
+		m, err := mtls.New(check.Accept)
 		if err != nil {
 			log.Panicf("failed to create mtls: %s", err.Error())
 		}
@@ -76,7 +76,7 @@ func constructServerFromEnvironmentConfig(cfg Config) http.Server {
 		checks = append(checks, m)
 	}
 
-	s, err := static.New(check.REJECT)
+	s, err := static.New(check.Reject)
 	if err != nil {
 		log.Panicf("failed to create static: %s", err.Error())
 	}

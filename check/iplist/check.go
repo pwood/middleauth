@@ -31,23 +31,23 @@ func New(stringNets []string, result check.Result) (IPList, error) {
 
 const header string = "X-Real-Ip"
 
-func (i IPList) Check(r *http.Request) (check.Result, error) {
+func (i IPList) Check(r *http.Request) (check.Decision, error) {
 	v := r.Header.Values(header)
 
 	if len(v) <= 0 {
-		return check.NEXT, fmt.Errorf("remote addr header not found: %s", header)
+		return check.NextDecision, fmt.Errorf("remote addr header not found: %s", header)
 	}
 
 	parsedIp := net.ParseIP(v[0])
 	if parsedIp == nil {
-		return check.NEXT, fmt.Errorf("remote addr unparsable: %s", v[0])
+		return check.NextDecision, fmt.Errorf("remote addr unparsable: %s", v[0])
 	}
 
 	for _, n := range i.nets {
 		if n.Contains(parsedIp) {
-			return i.result, nil
+			return check.Decision{Result: i.result, Context: fmt.Sprintf("IPList:%s", n.String())}, nil
 		}
 	}
 
-	return check.NEXT, nil
+	return check.NextDecision, nil
 }

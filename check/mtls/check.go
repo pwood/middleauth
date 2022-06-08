@@ -19,10 +19,10 @@ func New(result check.Result) (MTLS, error) {
 
 const header string = "X-Forwarded-Tls-Client-Cert"
 
-func (m MTLS) Check(r *http.Request) (check.Result, error) {
+func (m MTLS) Check(r *http.Request) (check.Decision, error) {
 	if _, found := r.Header[header]; found {
-		return m.result, nil
+		return check.Decision{Result: m.result, Context: "MTLS"}, nil
 	}
 
-	return check.NEXT, nil
+	return check.NextDecision, nil
 }

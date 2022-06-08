@@ -12,7 +12,7 @@ func TestNew(t *testing.T) {
 	t.Run("returns an error if an entry in the IP network list is not parsable", func(t *testing.T) {
 		in := []string{"this is not a CIDR network"}
 
-		_, err := New(in, check.ACCEPT)
+		_, err := New(in, check.Accept)
 
 		assert.Error(t, err)
 	})
@@ -20,7 +20,7 @@ func TestNew(t *testing.T) {
 	t.Run("returns a new IPList with networks provided and desired result on match", func(t *testing.T) {
 		in := []string{"10.0.0.0/8", "172.16.0.0/12"}
 
-		out, err := New(in, check.ACCEPT)
+		out, err := New(in, check.Accept)
 
 		expectedIPNetworks := []net.IPNet{
 			{
@@ -35,29 +35,29 @@ func TestNew(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, expectedIPNetworks, out.nets)
-		assert.Equal(t, check.ACCEPT, out.result)
+		assert.Equal(t, check.Accept, out.result)
 	})
 }
 
 func TestIPList_Check(t *testing.T) {
-	t.Run("returns NEXT and error if http header is not present", func(t *testing.T) {
+	t.Run("returns Next and error if http header is not present", func(t *testing.T) {
 		networks := []string{"10.0.0.0/8"}
 
-		iplist, err := New(networks, check.ACCEPT)
+		iplist, err := New(networks, check.Accept)
 		assert.NoError(t, err)
 
 		in := http.Request{}
 
-		out, err := iplist.Check(&in)
+		decision, err := iplist.Check(&in)
 
 		assert.Error(t, err)
-		assert.Equal(t, check.NEXT, out)
+		assert.Equal(t, check.Next, decision.Result)
 	})
 
-	t.Run("returns NEXT and error if http header is present but is not parsable", func(t *testing.T) {
+	t.Run("returns Next and error if http header is present but is not parsable", func(t *testing.T) {
 		networks := []string{"10.0.0.0/8"}
 
-		iplist, err := New(networks, check.ACCEPT)
+		iplist, err := New(networks, check.Accept)
 		assert.NoError(t, err)
 
 		in := http.Request{
@@ -66,16 +66,16 @@ func TestIPList_Check(t *testing.T) {
 			},
 		}
 
-		out, err := iplist.Check(&in)
+		decision, err := iplist.Check(&in)
 
 		assert.Error(t, err)
-		assert.Equal(t, check.NEXT, out)
+		assert.Equal(t, check.Next, decision.Result)
 	})
 
-	t.Run("returns NEXT if a non proxied request does not match the IP list", func(t *testing.T) {
+	t.Run("returns Next if a non proxied request does not match the IP list", func(t *testing.T) {
 		networks := []string{"10.0.0.0/8"}
 
-		iplist, err := New(networks, check.ACCEPT)
+		iplist, err := New(networks, check.Accept)
 		assert.NoError(t, err)
 
 		in := http.Request{
@@ -84,16 +84,16 @@ func TestIPList_Check(t *testing.T) {
 			},
 		}
 
-		out, err := iplist.Check(&in)
+		decision, err := iplist.Check(&in)
 
 		assert.NoError(t, err)
-		assert.Equal(t, check.NEXT, out)
+		assert.Equal(t, check.Next, decision.Result)
 	})
 
-	t.Run("returns ACCEPT if a non proxied request matches the IP list", func(t *testing.T) {
+	t.Run("returns Accept if a non proxied request matches the IP list", func(t *testing.T) {
 		networks := []string{"10.0.0.0/8"}
 
-		iplist, err := New(networks, check.ACCEPT)
+		iplist, err := New(networks, check.Accept)
 		assert.NoError(t, err)
 
 		in := http.Request{
@@ -102,16 +102,16 @@ func TestIPList_Check(t *testing.T) {
 			},
 		}
 
-		out, err := iplist.Check(&in)
+		decision, err := iplist.Check(&in)
 
 		assert.NoError(t, err)
-		assert.Equal(t, check.ACCEPT, out)
+		assert.Equal(t, check.Accept, decision.Result)
 	})
 
-	t.Run("returns NEXT if a non proxied request does not match the IPv6 list", func(t *testing.T) {
+	t.Run("returns Next if a non proxied request does not match the IPv6 list", func(t *testing.T) {
 		networks := []string{"2001::/16"}
 
-		iplist, err := New(networks, check.ACCEPT)
+		iplist, err := New(networks, check.Accept)
 		assert.NoError(t, err)
 
 		in := http.Request{
@@ -120,16 +120,16 @@ func TestIPList_Check(t *testing.T) {
 			},
 		}
 
-		out, err := iplist.Check(&in)
+		decision, err := iplist.Check(&in)
 
 		assert.NoError(t, err)
-		assert.Equal(t, check.NEXT, out)
+		assert.Equal(t, check.Next, decision.Result)
 	})
 
-	t.Run("returns ACCEPT if a non proxied request matches the IPv6 list", func(t *testing.T) {
+	t.Run("returns Accept if a non proxied request matches the IPv6 list", func(t *testing.T) {
 		networks := []string{"2001::/16"}
 
-		iplist, err := New(networks, check.ACCEPT)
+		iplist, err := New(networks, check.Accept)
 		assert.NoError(t, err)
 
 		in := http.Request{
@@ -138,9 +138,9 @@ func TestIPList_Check(t *testing.T) {
 			},
 		}
 
-		out, err := iplist.Check(&in)
+		decision, err := iplist.Check(&in)
 
 		assert.NoError(t, err)
-		assert.Equal(t, check.ACCEPT, out)
+		assert.Equal(t, check.Accept, decision.Result)
 	})
 }

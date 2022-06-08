@@ -14,15 +14,15 @@ type Static struct {
 
 func New(result check.Result) (Static, error) {
 	switch result {
-	case check.ACCEPT, check.REJECT:
+	case check.Accept, check.Reject:
 		return Static{result: result}, nil
-	case check.NEXT:
-		return Static{}, fmt.Errorf("NEXT result is invalid: %d", result)
+	case check.Next:
+		return Static{}, fmt.Errorf("Next result is invalid: %d", result)
 	default:
 		return Static{}, fmt.Errorf("unknown result set: %d", result)
 	}
 }
 
-func (i Static) Check(_ *http.Request) (check.Result, error) {
-	return i.result, nil
+func (i Static) Check(_ *http.Request) (check.Decision, error) {
+	return check.Decision{Result: i.result, Context: "Static"}, nil
 }

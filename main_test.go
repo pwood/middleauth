@@ -27,11 +27,11 @@ func Test_constructServerFromEnvironmentConfig(t *testing.T) {
 		assert.True(t, ok)
 
 		chkRes, _ := chkIp.Check(&http.Request{Header: http.Header{"X-Real-Ip": []string{"10.10.0.1"}}})
-		assert.Equal(t, check.ACCEPT, chkRes)
+		assert.Equal(t, check.Accept, chkRes.Result)
 
 		chkStatic, ok := srv.Checks[1].(static.Static)
 		chkRes, _ = chkStatic.Check(nil)
-		assert.Equal(t, check.REJECT, chkRes)
+		assert.Equal(t, check.Reject, chkRes.Result)
 
 		assert.True(t, ok)
 	})

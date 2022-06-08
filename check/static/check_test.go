@@ -13,29 +13,29 @@ func TestNew(t *testing.T) {
 		assert.Error(t, err)
 	})
 
-	t.Run("initialising with NEXT results in error", func(t *testing.T) {
-		_, err := New(check.NEXT)
+	t.Run("initialising with Next results in error", func(t *testing.T) {
+		_, err := New(check.Next)
 
 		assert.Error(t, err)
 	})
 
-	t.Run("initialising with ACCEPT returns static with no error", func(t *testing.T) {
-		s, err := New(check.ACCEPT)
+	t.Run("initialising with Accept returns static with no error", func(t *testing.T) {
+		s, err := New(check.Accept)
 
 		assert.NoError(t, err)
-		assert.Equal(t, check.ACCEPT, s.result)
+		assert.Equal(t, check.Accept, s.result)
 	})
 }
 
 func TestStatic_Check(t *testing.T) {
 	t.Run("returns initialised result type", func(t *testing.T) {
-		expectedResult := check.ACCEPT
+		expectedResult := check.Accept
 
 		s, err := New(expectedResult)
 		assert.NoError(t, err)
 
-		actualResult, err := s.Check(nil)
+		decision, err := s.Check(nil)
 		assert.NoError(t, err)
-		assert.Equal(t, expectedResult, actualResult)
+		assert.Equal(t, expectedResult, decision.Result)
 	})
 }
