@@ -10,6 +10,8 @@ const (
 	Accept
 )
 
+var ResultNames = []string{"Reject", "Next", "Accept"}
+
 type Decision struct {
 	Result  Result
 	Context string

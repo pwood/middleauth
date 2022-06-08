@@ -17,6 +17,8 @@ func (c checkHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			log.Printf("check failed: %s", err.Error())
 		}
 
+		log.Printf("%s: %s (%s)", r.RemoteAddr, check.ResultNames[decision.Result], decision.Context)
+
 		switch decision.Result {
 		case check.Accept:
 			http.Error(w, http.StatusText(http.StatusOK), http.StatusOK)
