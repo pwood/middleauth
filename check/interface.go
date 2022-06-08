@@ -8,9 +8,10 @@ const (
 	Reject Result = iota
 	Next
 	Accept
+	Error
 )
 
-var ResultNames = []string{"Reject", "Next", "Accept"}
+var ResultNames = []string{"Reject", "Next", "Accept", "Error"}
 
 type Decision struct {
 	Result  Result
