@@ -15,6 +15,7 @@ func (c checkHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	decision := check.Decision{Result: check.Error}
 	var err error
 
+Checks:
 	for _, chk := range c.checks {
 		decision, err = chk.Check(r)
 		if err != nil {
@@ -23,9 +24,9 @@ func (c checkHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		switch decision.Result {
 		case check.Accept:
-			break
+			break Checks
 		case check.Reject:
-			break
+			break Checks
 		}
 	}
 

@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/pwood/middleauth/check"
+	"github.com/pwood/middleauth/check/iplist"
 	"github.com/pwood/middleauth/check/static"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -42,6 +43,27 @@ func Test_checkHandler_ServeHTTP(t *testing.T) {
 		assert.NotNil(t, resp)
 		assert.Equal(t, http.StatusForbidden, resp.StatusCode)
 		assert.Equal(t, "403 Forbidden", resp.Status)
+	})
+
+	t.Run("calling /api/check with a single checker that REJECTs the request returns 200 OK", func(t *testing.T) {
+		s, err := static.New(check.Reject)
+		assert.NoError(t, err)
+
+		i, err := iplist.New([]string{"2001:8b0:645d::/48"}, check.Accept)
+		assert.NoError(t, err)
+
+		mux := New([]check.Checker{i, s})
+
+		req := httptest.NewRequest("GET", "http://example.org/api/check", nil)
+		req.Header.Add("X-Real-Ip", "2001:8b0:645d:80:a:b:c:d")
+		w := httptest.NewRecorder()
+
+		mux.ServeHTTP(w, req)
+
+		resp := w.Result()
+		assert.NotNil(t, resp)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		assert.Equal(t, "200 OK", resp.Status)
 	})
 
 	t.Run("calling /api/check with no checks returns 500 Internal Server Error", func(t *testing.T) {
